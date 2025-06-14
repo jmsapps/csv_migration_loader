@@ -1,39 +1,19 @@
 import argparse
 import csv
+import sys
+import os
 
-NORMALIZED_PRIMARY_KEYS = {
-    "id": "_id",
-}
+# Ensure the `scripts/` directory is on the import path
+sys.path.append(os.path.dirname(__file__))
 
-NORMALIZED_COLUMN_NAMES = {
-    "captureddate": "captured_date",
-    "collectiondatetime": "collection_date",
-    "dateofbirth": "date_of_birth",
-    "datestarted": "period_start_date",
-    "dbp": "dbp_value",
-    "diabeticretinography": "diabetic_retinography",
-    "diabeticretinographydate": "diabetic_retinography_date",
-    "diabeticretinographykeyword": "diabetic_retinography_extracted_keyword",
-    "e_prime_val": "e_prime_value",
-    "elibilitycriteria": "elibility_criteria",
-    "keyword": "extracted_keyword",
-    "lvef_val": "lvef_value",
-    "medication_source": "information_source",
-    "medicationname": "medication_name",
-    "nlp": "nlp_code",
-    "numberresult": "result_value",
-    "resultdescription": "result_description",
-    "sbp": "sbp_value",
-    "sentence": "source_text",
-    "source": "information_source",
-}
-
-INT_COLUMN_NAMES = ["_id"]
+try:
+    from normalization_fields import NORMALIZATION_FIELDS
+except ImportError:
+    NORMALIZATION_FIELDS = {}
 
 def load_from_csv(path):
-    normalization_dicts = NORMALIZED_PRIMARY_KEYS | NORMALIZED_COLUMN_NAMES
     # just to account for human error e.g. accidental camelCase in NORMALIZED_COLUMN_NAMES
-    normalized_keys = {k.lower(): v for k, v in normalization_dicts.items()}
+    normalized_keys = {k.lower(): v for k, v in NORMALIZATION_FIELDS.items()}
 
     with open(path, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
