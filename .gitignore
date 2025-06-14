@@ -1,0 +1,20 @@
+# python
+.venv/
+
+# CSV data files
+csv/*
+
+# Migration state file
+db/migrations/.current
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# macOS
+.DS_Store
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
