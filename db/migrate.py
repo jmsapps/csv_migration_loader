@@ -29,8 +29,6 @@ def run(direction):
     current = read_current()
 
     start = 0 if not current else migrations.index(current) + 1
-    if direction == 'down' and current:
-        start = migrations.index(current)
 
     if direction == 'up':
         if len(migrations[start:]) == 0:
@@ -60,6 +58,8 @@ def run(direction):
             prev = migrations[idx - 1] if idx > 0 else ''
 
             write_current(prev)
+
+            print('Successfully ran down migration.')
         else:
             print("No migration to revert.")
 

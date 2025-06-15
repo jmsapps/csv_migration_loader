@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 ### 3. Add Normalization Fields for load_from_csv.py script
 - Copy `scripts/normalization_fields.py.example` => `scripts/normalization_fields.py`
-- Add additional normalization fields ass necessary (normalizes csv headers e.g. 'somecolumnheader' to 'some_column_header')
+- Add additional normalization fields as necessary (normalizes csv headers e.g. 'somecolumnheader' to 'some_column_header')
 
 ### 4. Create and Run Migrations
 Create migration (a file will be created in db/migrations with an up() and down() function and client connection):
@@ -61,23 +61,12 @@ def up():
             "bsonType": "object",
             "required": ["_id", "username", "email", "role"],
             "properties": {
-                "_id": {
-                    "bsonType": "int",
-                    "description": "Must be an integer and is required"
-                },
-                "username": {
-                    "bsonType": "string",
-                    "description": "Username of the user"
-                },
-                "email": {
-                    "bsonType": "string",
-                    "description": "Email address of the user"
-                },
-                "role": {
-                    "bsonType": "string",
-                    "description": "Role assigned to the user"
-                }
-            }
+                "_id": { "bsonType": "int" },
+                "username": { "bsonType": "string" },
+                "email": { "bsonType": "string" },
+                "role": { "bsonType": "string" }
+            },
+            "additionalProperties": False
         }
     }
 
