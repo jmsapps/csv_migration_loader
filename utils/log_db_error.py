@@ -1,4 +1,4 @@
-def parse_bulk_write_error(e):
+def log_db_error(e):
     write_errors = getattr(e, "details", {}).get("writeErrors", [])
     if not write_errors:
         print(f"Error: {e}")
