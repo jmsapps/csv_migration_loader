@@ -4,8 +4,8 @@
 # CSV data files
 csv/*
 
-# Migration state file
-db/migrations/.current
+# Migrations
+db/migrations/*
 
 # Python bytecode
 __pycache__/
@@ -21,3 +21,10 @@ __pycache__/
 
 # scripts
 scripts/normalization_fields.py
+
+# environment variables
+.env
+.env.*
+!.env.example
+
+# migrations

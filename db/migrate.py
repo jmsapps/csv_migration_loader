@@ -1,15 +1,16 @@
-import os
 import importlib.util
+import os
 import sys
 
-MIGRATIONS_DIR = 'db/migrations'
-CURRENT_FILE = os.path.join(MIGRATIONS_DIR, '.current')
+from utils import getenv
 
-# Makes modules importable within migration files
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+TENANT = getenv("TENANT")
+MIGRATIONS_DIR = "db/migrations"
+CURRENT_FILE = os.path.join(MIGRATIONS_DIR, f".current_{TENANT}")
+
 
 def load_migrations():
-    files = sorted(f for f in os.listdir(MIGRATIONS_DIR) if f.endswith('.py'))
+    files = sorted(f for f in os.listdir(MIGRATIONS_DIR) if f.endswith(".py"))
 
     return files
 
@@ -21,7 +22,7 @@ def read_current():
         return f.read().strip()
 
 def write_current(filename):
-    with open(CURRENT_FILE, 'w') as f:
+    with open(CURRENT_FILE, "w") as f:
         f.write(filename)
 
 def run(direction):
@@ -30,36 +31,34 @@ def run(direction):
 
     start = 0 if not current else migrations.index(current) + 1
 
-    if direction == 'up':
+    if direction == "up":
         if len(migrations[start:]) == 0:
-            print('No migrations to run.')
+            print("No migrations to run.")
 
             return
 
         for migration in migrations[start:]:
-            print(f"Applying {migration}...")
+            print(f"Applying {migration} for {TENANT}...")
 
-            run_migration(migration, 'up')
+            run_migration(migration, "up")
             write_current(migration)
 
-            break  # apply one at a time
-
         if len(migrations[start:]) == 1:
-            print('Successfully ran migration.')
+            print("Successfully ran migration.")
         if len(migrations[start:]) > 1:
-            print('Successfully ran migrations.')
+            print("Successfully ran migrations.")
 
-    elif direction == 'down':
+    elif direction == "down":
         if current:
-            print(f"Reverting {current}...")
+            print(f"Reverting {current} for {TENANT}...")
 
-            run_migration(current, 'down')
+            run_migration(current, "down")
             idx = migrations.index(current)
-            prev = migrations[idx - 1] if idx > 0 else ''
+            prev = migrations[idx - 1] if idx > 0 else ""
 
             write_current(prev)
 
-            print('Successfully ran down migration.')
+            print("Successfully ran down migration.")
         else:
             print("No migration to revert.")
 

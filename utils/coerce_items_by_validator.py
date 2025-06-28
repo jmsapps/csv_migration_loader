@@ -43,6 +43,31 @@ def coerce_items_by_validator(items, validator):
                         value = caster(value)
                     except Exception:
                         pass  # fallback to original value if coercion fails
+
+                if value:
+                    description = key_schema.get("description", "")
+                    override_rules = description.split(",")
+                    for rule in override_rules:
+                        rule = rule.strip()
+
+                        if rule.startswith("coerce:"):
+                            coerce_hint = rule.split("coerce:")[1]
+                            if coerce_hint == "upper":
+                                value = value.upper()
+                            elif coerce_hint == "lower":
+                                value = value.lower()
+                            elif coerce_hint == "str":
+                                value = str(value) if value not in ("", None, "null") else None
+                            elif coerce_hint == "int":
+                                value = int(value) if value not in ("", None, "null") else None
+                            elif coerce_hint == "bool":
+                                if value.lower() in ["true", "1", "yes"]:
+                                    value = True
+                                elif value.lower() in ["false", "0", "no"]:
+                                    value = False
+                                else:
+                                    value = None
+
             new_item[key] = value
         coerced.append(new_item)
 
