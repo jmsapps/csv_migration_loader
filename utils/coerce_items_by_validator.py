@@ -3,7 +3,12 @@ def coerce_items_by_validator(items, validator):
         "int": int,
         "string": str,
         "double": float,
-        "bool": lambda v: v.lower() in ("true", "1", "yes") if isinstance(v, str) else bool(v),
+        "bool": lambda v: (
+            v.lower() in ("true", "1", "yes")
+            if isinstance(v, str)
+            else bool(v) if v is not None
+            else None
+        ),
         # Add more bsonType mappings as needed
     }
 
@@ -53,20 +58,23 @@ def coerce_items_by_validator(items, validator):
                         if rule.startswith("coerce:"):
                             coerce_hint = rule.split("coerce:")[1]
                             if coerce_hint == "upper":
-                                value = value.upper()
+                                value = value.upper() if value not in ("", None, "null") else None
                             elif coerce_hint == "lower":
-                                value = value.lower()
+                                value = value.lower() if value not in ("", None, "null") else None
                             elif coerce_hint == "str":
                                 value = str(value) if value not in ("", None, "null") else None
                             elif coerce_hint == "int":
                                 value = int(value) if value not in ("", None, "null") else None
                             elif coerce_hint == "bool":
-                                if value.lower() in ["true", "1", "yes"]:
-                                    value = True
-                                elif value.lower() in ["false", "0", "no"]:
-                                    value = False
+                                if isinstance(value, str):
+                                    if value.lower() in ["true", "1", "yes"]:
+                                        value = True
+                                    elif value.lower() in ["false", "0", "no"]:
+                                        value = False
+                                    else:
+                                        value = None
                                 else:
-                                    value = None
+                                    value = bool(value) if value is not None else None
 
             new_item[key] = value
         coerced.append(new_item)
